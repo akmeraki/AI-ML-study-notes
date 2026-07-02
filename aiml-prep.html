@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AIML Prep">
+<title>AIML Interview Prep</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: #2a2a3a;
+    --accent: #7c6af7;
+    --accent2: #4fc4cf;
+    --accent3: #f7a26a;
+    --text: #e8e8f0;
+    --muted: #6b6b88;
+    --green: #4fc87a;
+    --red: #f76a6a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  header {
+    padding: 28px 24px 0;
+    position: relative;
+  }
+  .header-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  h1 {
+    font-size: clamp(26px, 6vw, 38px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  h1 span { color: var(--accent); }
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-weight: 400;
+  }
+
+  /* PROGRESS BAR */
+  .progress-section {
+    padding: 20px 24px 0;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .progress-label span:last-child {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+  }
+  .progress-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    padding: 20px 24px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.2s;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .tab:hover:not(.active) {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  /* MAIN CONTENT */
+  .content {
+    padding: 20px 24px 100px;
+  }
+
+  /* SECTION */
+  .section { display: none; }
+  .section.visible { display: block; }
+
+  /* TOPIC CARDS */
+  .topic-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .topic-card:hover { border-color: var(--accent); }
+  .topic-card.done { border-color: var(--green); opacity: 0.7; }
+
+  .topic-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .topic-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .topic-meta { flex: 1; min-width: 0; }
+  .topic-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .topic-sub {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .topic-badges {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .badge {
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .badge-hard { background: #f76a6a22; color: var(--red); border: 1px solid #f76a6a44; }
+  .badge-med { background: #f7a26a22; color: var(--accent3); border: 1px solid #f7a26a44; }
+  .badge-easy { background: #4fc87a22; color: var(--green); border: 1px solid #4fc87a44; }
+  .badge-new { background: #7c6af722; color: var(--accent); border: 1px solid #7c6af744; }
+
+  .check-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: transparent;
+    font-size: 14px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .check-btn.checked {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+
+  .topic-body {
+    display: none;
+    padding: 0 16px 16px;
+    border-top: 1px solid var(--border);
+  }
+  .topic-body.open { display: block; }
+
+  .topic-body ul {
+    list-style: none;
+    padding: 12px 0 0;
+  }
+  .topic-body ul li {
+    padding: 6px 0;
+    font-size: 13px;
+    color: var(--muted);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .topic-body ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 11px;
+  }
+
+  .resource-links {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .resource-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--accent2);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .resource-link:hover {
+    border-color: var(--accent2);
+    background: #4fc4cf11;
+  }
+
+  /* TOPIC DETAIL PAGE */
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-bottom: 18px;
+    transition: all 0.2s;
+  }
+  .back-btn:hover { border-color: var(--accent); color: var(--text); }
+
+  .detail-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  .detail-header .topic-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+  .detail-header-meta { flex: 1; min-width: 0; }
+  .detail-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 3px;
+    line-height: 1.25;
+  }
+  .detail-sub {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .subtopic-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    transition: border-color 0.2s;
+    cursor: pointer;
+  }
+  .subtopic-box:hover { border-color: var(--accent); }
+  .subtopic-box-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .subtopic-box-text { flex: 1; min-width: 0; }
+  .subtopic-chevron {
+    color: var(--muted);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .subtopic-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent2);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .subtopic-title::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  .subtopic-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* SUBTOPIC DETAIL PAGE */
+  .subtopic-detail-parent {
+    font-size: 11px;
+    color: var(--accent2);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .subtopic-detail-title {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 24px;
+  }
+  .detail-block { margin-bottom: 28px; }
+  .explanation-text {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text);
+  }
+  .usecase-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent2);
+    border-radius: 8px;
+    padding: 11px 14px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  .diagram-flow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 14px;
+  }
+  .diagram-step {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent2);
+    text-align: center;
+    flex: 1 1 auto;
+    min-width: 100px;
+  }
+  .diagram-arrow {
+    color: var(--accent);
+    font-size: 16px;
+    padding: 0 6px;
+    flex-shrink: 0;
+  }
+
+  .flashcard-area {
+    perspective: 1000px;
+    margin-bottom: 16px;
+  }
+  .flashcard {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    min-height: 180px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .flashcard::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.05;
+  }
+  .flashcard:hover { border-color: var(--accent); }
+  .flashcard.flipped { border-color: var(--accent2); }
+  .card-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .card-label.answer { color: var(--accent2); }
+  .card-q {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text);
+  }
+  .card-a {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+    display: none;
+  }
+  .flashcard.flipped .card-q { display: none; }
+  .flashcard.flipped .card-a { display: block; }
+  .flashcard.flipped .card-label.question { display: none; }
+  .flashcard.flipped .card-label.answer { display: block; }
+  .card-label.answer { display: none; }
+
+  .card-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .card-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-again { background: #f76a6a22; color: var(--red); border: 1px solid #f76a6a44; }
+  .btn-good { background: #7c6af722; color: var(--accent); border: 1px solid #7c6af744; }
+  .btn-easy { background: #4fc87a22; color: var(--green); border: 1px solid #4fc87a44; }
+  .card-btn:hover { opacity: 0.8; transform: translateY(-1px); }
+
+  .card-counter {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .flip-hint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 10px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0; right: 0;
+    background: #0a0a0fdd;
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 20px;
+    z-index: 100;
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 4px 16px;
+    border-radius: 10px;
+    transition: all 0.2s;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .nav-item.active { color: var(--accent); }
+  .nav-icon { font-size: 22px; }
+  .nav-label { font-size: 10px; font-weight: 500; }
+
+  /* CHIPS */
+  .section-title {
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    margin-top: 4px;
+  }
+
+  /* INTERVIEWS PAGE */
+  .interview-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .round-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .interview-info h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .interview-info p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .interview-info .tip {
+    margin-top: 8px;
+    padding: 8px 10px;
+    background: #7c6af711;
+    border-left: 2px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    font-size: 12px;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-eyebrow">2026 Edition · Research + Production</div>
+  <h1>AIML <span>Interview</span><br>Prep</h1>
+  <p class="subtitle">Your personalized roadmap to $160K+ roles with H-1B sponsorship</p>
+</header>
+
+<div class="progress-section">
+  <div class="progress-label">
+    <span>Overall Progress</span>
+    <span id="progress-pct">0%</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showSection('topics', this)">📚 Topics</button>
+  <button class="tab" onclick="showSection('rounds', this)">🎯 Rounds</button>
+  <button class="tab" onclick="showSection('cards', this)">🃏 Flashcards</button>
+</div>
+
+<div class="content">
+
+  <!-- TOPICS -->
+  <div class="section visible" id="section-topics">
+    <div class="section-title">Core Technical Areas</div>
+    <div id="topics-list"></div>
+  </div>
+
+  <!-- TOPIC DETAIL PAGE -->
+  <div class="section" id="section-topic-detail">
+    <button class="back-btn" onclick="closeTopicDetail()">← Back to Topics</button>
+    <div class="detail-header">
+      <div class="topic-icon" id="detail-icon">🤖</div>
+      <div class="detail-header-meta">
+        <div class="detail-title" id="detail-title"></div>
+        <div class="detail-sub" id="detail-sub"></div>
+      </div>
+      <span class="badge" id="detail-badge"></span>
+    </div>
+    <div id="detail-subtopics"></div>
+    <div class="section-title" style="margin-top:22px">Resources</div>
+    <div class="resource-links" id="detail-resources"></div>
+  </div>
+
+  <!-- SUBTOPIC DETAIL PAGE -->
+  <div class="section" id="section-subtopic-detail">
+    <button class="back-btn" id="sub-back-btn" onclick="closeSubtopicDetail()">← Back</button>
+    <div class="subtopic-detail-parent" id="sub-detail-parent"></div>
+    <div class="subtopic-detail-title" id="sub-detail-title"></div>
+
+    <div class="detail-block">
+      <div class="section-title">Explanation</div>
+      <div class="explanation-text" id="sub-detail-explanation"></div>
+    </div>
+
+    <div class="detail-block">
+      <div class="section-title">Use Cases</div>
+      <div id="sub-detail-usecases"></div>
+    </div>
+
+    <div class="detail-block">
+      <div class="section-title">Diagram</div>
+      <div class="diagram-flow" id="sub-detail-diagram"></div>
+    </div>
+
+    <div class="detail-block">
+      <div class="section-title">Resources</div>
+      <div class="resource-links" id="sub-detail-resources"></div>
+    </div>
+  </div>
+
+  <!-- ROUNDS -->
+  <div class="section" id="section-rounds">
+    <div class="section-title">What to expect in each round</div>
+
+    <div class="interview-card">
+      <div class="round-num">1</div>
+      <div class="interview-info">
+        <h3>Recruiter Screen (30 min)</h3>
+        <p>Career background, tools, team size, comp expectations. Mention H-1B early.</p>
+        <div class="tip">💡 Have your TC ask ready. Know your target: $160K+ base or total comp?</div>
+      </div>
+    </div>
+
+    <div class="interview-card">
+      <div class="round-num">2</div>
+      <div class="interview-info">
+        <h3>Technical Phone Screen (45–60 min)</h3>
+        <p>1–2 medium LeetCode problems. Focus on arrays, trees, hashmaps. Code in Python. Talk through every step.</p>
+        <div class="tip">💡 Name your assumptions and catch your own bugs before the interviewer does.</div>
+      </div>
+    </div>
+
+    <div class="interview-card">
+      <div class="round-num">3</div>
+      <div class="interview-info">
+        <h3>ML Concepts Round (45 min)</h3>
+        <p>Core theory: transformers, gradient descent, regularization, evaluation metrics. Not just definitions — explain trade-offs and business impact.</p>
+        <div class="tip">💡 "It reduces dimensionality" is a failing answer for PCA. Go deeper.</div>
+      </div>
+    </div>
+
+    <div class="interview-card">
+      <div class="round-num">4</div>
+      <div class="interview-info">
+        <h3>ML System Design (60 min)</h3>
+        <p>Design an end-to-end ML system. RAG systems, recommenders, inference batching pipelines, and LLM-powered agents are most common in 2026. Start with business objective, then data → model → eval → deploy → monitor.</p>
+        <div class="tip">💡 Anthropic asks about inference batching for a single GPU with 100 concurrent requests. Prep this specifically.</div>
+      </div>
+    </div>
+
+    <div class="interview-card">
+      <div class="round-num">5</div>
+      <div class="interview-info">
+        <h3>AI-Assisted Coding (60 min) — NEW</h3>
+        <p>Debug or extend a codebase using an AI assistant in the IDE. They're watching how well you direct the AI, catch mistakes, and override it when needed.</p>
+        <div class="tip">💡 Practice with Cursor or Copilot. The signal is judgment, not speed.</div>
+      </div>
+    </div>
+
+    <div class="interview-card">
+      <div class="round-num">6</div>
+      <div class="interview-info">
+        <h3>Behavioral / Values (45 min)</h3>
+        <p>Use STAR format. Quantify outcomes. At safety-focused companies (Anthropic, OpenAI), expect: "Tell me about a time you made a safety-first decision" or "a time you built something that conflicted with your values."</p>
+        <div class="tip">💡 "Cut p95 latency from 4s to 900ms" beats "it got faster." Always put a number on it.</div>
+      </div>
+    </div>
+
+    <div class="interview-card">
+      <div class="round-num">7</div>
+      <div class="interview-info">
+        <h3>Take-Home (varies)</h3>
+        <p>Common at AI startups. Build a RAG feature, a memory engine, or an eval harness. Keep to under 4 hours. If it feels like free consulting (72-hour projects), it's okay to withdraw.</p>
+        <div class="tip">💡 Anthropic's take-home: code optimization for speed, 4-hour Python workload on TPU-like ops.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="section" id="section-cards">
+    <div class="section-title">Quick-fire concepts</div>
+    <div class="card-counter" id="card-counter">Card 1 of 12</div>
+    <div class="flashcard-area">
+      <div class="flashcard" id="flashcard" onclick="flipCard()">
+        <div class="card-label question">Question — tap to reveal answer</div>
+        <div class="card-label answer">Answer</div>
+        <div class="card-q" id="card-q"></div>
+        <div class="card-a" id="card-a"></div>
+        <div class="flip-hint">tap to flip</div>
+      </div>
+    </div>
+    <div class="card-controls">
+      <button class="card-btn btn-again" onclick="rateCard('again')">↩ Again</button>
+      <button class="card-btn btn-good" onclick="rateCard('good')">👍 Good</button>
+      <button class="card-btn btn-easy" onclick="rateCard('easy')">⚡ Easy</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-item active" onclick="showSection('topics', this, true)">
+    <span class="nav-icon">📚</span>
+    <span class="nav-label">Topics</span>
+  </button>
+  <button class="nav-item" onclick="showSection('rounds', this, true)">
+    <span class="nav-icon">🎯</span>
+    <span class="nav-label">Rounds</span>
+  </button>
+  <button class="nav-item" onclick="showSection('cards', this, true)">
+    <span class="nav-icon">🃏</span>
+    <span class="nav-label">Flashcards</span>
+  </button>
+</div>
+
+<script>
+const CARDS = [
+  { q: "What is the KV cache in a transformer and why does it matter for inference?", a: "The KV cache stores key and value matrices from previous tokens so they don't need to be recomputed at each step. This makes autoregressive generation O(n) instead of O(n²) per step — critical for long contexts and reducing latency." },
+  { q: "What's the difference between RAG and fine-tuning? When do you pick each?", a: "RAG retrieves fresh external knowledge at inference time — best for factual, dynamic, or proprietary data. Fine-tuning bakes knowledge into weights — best for style, format, or domain-specific reasoning patterns. They're complementary, not alternatives." },
+  { q: "Explain gradient descent vs. Adam in one sentence each.", a: "Gradient descent: update weights by stepping in the direction that reduces loss most. Adam: adapts the learning rate per parameter using a moving average of gradients and their squares — converges faster and is more robust." },
+  { q: "What is LoRA and why is it preferred over full fine-tuning?", a: "LoRA (Low-Rank Adaptation) freezes the original weights and adds small trainable rank-decomposition matrices to each layer. It reduces trainable parameters by 10,000x while matching full fine-tune performance — dramatically cheaper in compute and memory." },
+  { q: "How would you detect and handle concept drift in a production ML model?", a: "Monitor input feature distributions (PSI, KL divergence) and output predictions over time. Set automated alerts when distributions shift. Strategies: retrain on recent data, use online learning, or maintain multiple model versions with shadow deployments." },
+  { q: "What is the ReAct pattern for AI agents?", a: "ReAct = Reason + Act. The LLM alternates between: (1) Thought — reasoning about the current state, (2) Action — calling a tool, (3) Observation — reading the tool result. This loop continues until a final answer is reached." },
+  { q: "Explain SHAP values to a non-technical stakeholder.", a: "SHAP tells you how much each feature pushed a prediction up or down from the average. If the model predicts a loan default at 80% but the average is 40%, SHAP tells you: 'credit history added +25%, income subtracted -5%,' etc." },
+  { q: "What evaluation metrics would you use for a RAG system?", a: "Faithfulness (does the answer stay grounded in retrieved docs?), Answer Relevance (does it answer the question?), Context Precision (are retrieved docs relevant?), Context Recall (did you retrieve all needed docs?). RAGAS automates these." },
+  { q: "What's the difference between beam search and nucleus (top-p) sampling?", a: "Beam search keeps the k most probable sequences at each step — deterministic, good for translation. Top-p sampling draws from the smallest set of tokens whose cumulative probability exceeds p — stochastic, better for creative generation." },
+  { q: "PCA: go beyond 'it reduces dimensionality.'", a: "PCA finds orthogonal directions (principal components) of maximum variance via eigendecomposition of the covariance matrix. The first PC is the direction with highest variance, each subsequent is orthogonal to prior ones. It's SVD applied to centered data." },
+  { q: "Design a batching system for LLM inference on a single GPU — what are the key trade-offs?", a: "Batch requests to maximize GPU utilization. Key trade-offs: larger batches = higher throughput but higher latency per request. Use continuous batching (Orca-style) so new requests join mid-batch. Set max batch size by VRAM, max latency SLA. Implement request queuing with timeouts." },
+  { q: "What is catastrophic forgetting and how do you prevent it during fine-tuning?", a: "When fine-tuning on new data, the model overwrites weights for old knowledge. Mitigations: LoRA (keeps base weights frozen), regularization (EWC — penalize changes to important weights), replay buffers (mix old data into training), or sequential multi-task fine-tuning." }
+];
+
+let currentCard = 0;
+let isFlipped = false;
+
+function loadCard(idx) {
+  const card = CARDS[idx];
+  document.getElementById('card-q').textContent = card.q;
+  document.getElementById('card-a').textContent = card.a;
+  document.getElementById('card-counter').textContent = `Card ${idx + 1} of ${CARDS.length}`;
+  const fc = document.getElementById('flashcard');
+  fc.classList.remove('flipped');
+  isFlipped = false;
+}
+
+function flipCard() {
+  const fc = document.getElementById('flashcard');
+  fc.classList.toggle('flipped');
+  isFlipped = !isFlipped;
+}
+
+function rateCard(rating) {
+  currentCard = (currentCard + 1) % CARDS.length;
+  loadCard(currentCard);
+}
+
+// ---- TOPICS DATA ----
+const TOPICS = [
+  {
+    icon: '🤖', bg: '#7c6af722', title: 'LLM Fundamentals', sub: 'transformers · attention · tokenization',
+    badgeClass: 'badge-hard', badgeText: 'Hard',
+    subtopics: [
+      { t: 'Transformer Architecture', d: 'Encoder, decoder, encoder-decoder variants',
+        explanation: "The transformer replaced recurrence with self-attention so every token could look at every other token in parallel. Encoder-only models (BERT) build bidirectional representations for understanding tasks. Decoder-only models (GPT, Claude) generate text left-to-right and now dominate LLMs. Encoder-decoder models (T5) map an input sequence into an output sequence and suit tasks like translation or summarization.",
+        useCases: [
+          'Decoder-only: chatbots, code generation, general-purpose LLMs (GPT, Claude, Llama)',
+          'Encoder-only: classification, embeddings, search relevance (BERT, sentence-transformers)',
+          'Encoder-decoder: translation, summarization, structured seq2seq tasks (T5, BART)'
+        ],
+        diagram: ['Input tokens', 'Embedding + positions', 'N × attention/FFN blocks', 'Output (logits or encoding)'] },
+      { t: 'Self-Attention & Multi-Head Attention', d: 'How queries, keys, and values interact',
+        explanation: "Each token creates a Query, Key, and Value vector. Attention scores compare a token's Query against every other token's Key, then use those scores to weight a sum of Values — letting the model decide what to 'look at.' Multiple attention heads run this in parallel with different learned projections, so the model can track syntax, coreference, and semantics simultaneously.",
+        useCases: [
+          'Resolving pronouns and long-range dependencies in a sentence',
+          "Letting a token attend to relevant context regardless of distance",
+          "Building richer representations by combining multiple 'views' of a sequence"
+        ],
+        diagram: ['Token → Q,K,V', 'Score = Q·K', 'Softmax over scores', 'Weighted sum of V', 'Concat heads → output'] },
+      { t: 'Tokenization', d: 'BPE, WordPiece, SentencePiece — domain quirks',
+        explanation: "LLMs can't process raw text directly, so it's split into tokens — subword units learned from a training corpus. BPE merges the most frequent adjacent byte/character pairs iteratively; WordPiece is similar but chooses merges by likelihood; SentencePiece treats text as a raw stream with no whitespace assumption, which matters for languages without spaces.",
+        useCases: [
+          'Handling rare or made-up words by breaking them into known subwords',
+          'Multilingual models where whitespace-based splitting fails (Japanese, Chinese)',
+          'Controlling vocabulary size vs. sequence length trade-offs for cost and speed'
+        ],
+        diagram: ['Raw text', 'Pre-tokenize', 'Apply merge rules (BPE)', 'Token IDs', 'Embeddings'] },
+      { t: 'Positional Encoding', d: 'Absolute vs. rotary (RoPE)',
+        explanation: "Attention has no inherent sense of order, so position information must be injected. Original transformers added fixed sinusoidal vectors per position. RoPE instead rotates query/key vectors by an angle proportional to position, which encodes relative distance directly into the attention dot product and extrapolates better to longer sequences.",
+        useCases: [
+          'Long-context models needing to generalize beyond their training sequence length',
+          'Relative position mattering more than absolute position (RoPE) for code and long documents',
+          'Enabling position interpolation techniques to extend context windows'
+        ],
+        diagram: ['Token embedding', '+ / rotate by position', 'Position-aware vector', 'Fed into attention'] },
+      { t: 'Decoding Strategies', d: 'Beam search, top-k, top-p, temperature',
+        explanation: "After the model outputs a probability distribution over the vocabulary, a decoding strategy picks the next token. Beam search keeps the top-k most likely sequences and is deterministic — good for translation. Sampling methods (top-k, top-p, temperature) introduce randomness for more natural, creative text, trading some coherence for diversity.",
+        useCases: [
+          'Low temperature / greedy decoding for factual, deterministic answers (code, math)',
+          'Top-p sampling for creative writing or conversational variety',
+          'Beam search for translation where a single best sequence is desired'
+        ],
+        diagram: ['Logits', 'Temperature scale', 'Filter (top-k/top-p)', 'Sample or pick argmax', 'Next token'] },
+      { t: 'KV Cache', d: 'How it speeds up inference',
+        explanation: "Without caching, generating each new token would require recomputing attention over all previous tokens from scratch. The KV cache stores each layer's key and value vectors as they're computed, so each new token only needs one forward pass instead of reprocessing the whole sequence — turning generation from roughly O(n²) into O(n) per step.",
+        useCases: [
+          'Making chat applications responsive with low latency per token',
+          'Serving long conversations without recomputing the entire context each turn',
+          'A major target for memory optimization since cache size scales with context length'
+        ],
+        diagram: ['Token 1: compute K,V → cache', 'Token 2: reuse cache + new K,V', 'Token 3: reuse + append', '...'] },
+      { t: 'Autoregressive Generation', d: 'End-to-end inference process',
+        explanation: "The model predicts one token at a time, feeding each generated token back in as input for the next prediction. This continues until an end-of-sequence token or a length limit is hit. It's simple but means errors can compound — an early wrong token shifts everything that follows.",
+        useCases: [
+          'Any chat or completion model producing free-form text',
+          'Streaming responses token-by-token to reduce perceived latency',
+          'Understanding why hallucinations can snowball across a long generation'
+        ],
+        diagram: ['Prompt', 'Predict next token', 'Append to sequence', 'Repeat until EOS/limit', 'Full output'] }
+    ],
+    resources: [
+      { label: '📖 Illustrated Transformer', url: 'https://jalammar.github.io/illustrated-transformer/' },
+      { label: '📄 Attention Is All You Need', url: 'https://arxiv.org/abs/1706.03762' },
+      { label: '▶ Karpathy: GPT from scratch', url: 'https://www.youtube.com/watch?v=kCc8FmEb1nY' }
+    ]
+  },
+  {
+    icon: '🔍', bg: '#4fc4cf22', title: 'RAG Systems', sub: 'retrieval · vector DBs · evaluation',
+    badgeClass: 'badge-new', badgeText: '🔥 2026',
+    subtopics: [
+      { t: 'RAG Pipeline End-to-End', d: 'Chunking → embedding → retrieval → generation',
+        explanation: "RAG augments an LLM with an external knowledge source at inference time. Documents are chunked, embedded, and stored; a user query is embedded and matched against those chunks; the top matches are inserted into the prompt as context; the LLM generates an answer grounded in that retrieved text instead of relying purely on its parametric memory.",
+        useCases: [
+          'Enterprise search over internal docs the base model was never trained on',
+          'Keeping answers current on fast-changing information (news, pricing, policies)',
+          'Reducing hallucination by grounding answers in retrieved source text'
+        ],
+        diagram: ['Docs → chunk → embed → store', 'Query → embed', 'Vector search (top-k)', 'Insert context into prompt', 'LLM generates answer'] },
+      { t: 'Dense vs. Sparse Retrieval', d: 'BM25 vs. bi-encoder',
+        explanation: "Sparse retrieval (BM25) matches on exact keyword overlap, weighted by term frequency and rarity — fast, interpretable, and strong for exact terms like IDs or names. Dense retrieval uses a bi-encoder to embed query and documents into the same vector space and finds nearest neighbors — better at capturing semantic meaning even without exact word overlap.",
+        useCases: [
+          'BM25 for exact-match needs like product SKUs, legal citations, error codes',
+          'Dense embeddings for conceptual questions phrased differently than the source text',
+          'Hybrid scoring when a system needs both precision and semantic recall'
+        ],
+        diagram: ['Query', 'BM25 (keyword score)', 'Bi-encoder (semantic score)', 'Combine / weight scores', 'Ranked results'] },
+      { t: 'Vector Databases', d: 'Pinecone, ChromaDB, Weaviate, pgvector',
+        explanation: "Vector databases store embeddings and support fast approximate nearest-neighbor search over millions of vectors. HNSW builds a navigable graph for logarithmic-time search; IVF partitions vectors into clusters and searches only the nearest ones. Choice depends on scale, update frequency, and latency requirements.",
+        useCases: [
+          'Pinecone/Weaviate for managed, scalable production RAG systems',
+          'pgvector for adding vector search inside an existing Postgres database',
+          'ChromaDB for lightweight local prototyping and small-scale RAG apps'
+        ],
+        diagram: ['Embeddings in', 'Index (HNSW/IVF)', 'Approximate NN search', 'Top-k nearest vectors'] },
+      { t: 'Chunking Strategies', d: 'Fixed, semantic, sliding window',
+        explanation: "How you split documents directly affects retrieval quality. Fixed-size chunking is simple but can cut sentences mid-thought. Semantic chunking splits at natural topic boundaries. Sliding-window chunking overlaps adjacent chunks so context isn't lost at the edges, at the cost of some redundancy.",
+        useCases: [
+          'Sliding window for dense technical docs where boundary context matters',
+          'Semantic chunking for long-form articles with clear section structure',
+          'Fixed-size chunking as a fast, good-enough baseline for simple corpora'
+        ],
+        diagram: ['Document', 'Split (fixed/semantic/sliding)', 'Chunks with metadata', 'Embed each chunk'] },
+      { t: 'Reranking', d: 'Cross-encoders, Cohere Rerank',
+        explanation: "Initial retrieval (bi-encoder or BM25) is fast but approximate. A reranker — typically a cross-encoder that jointly processes the query and each candidate — re-scores the top-k results with much higher accuracy, since it can model query-document interaction directly rather than comparing separate embeddings.",
+        useCases: [
+          'Boosting precision on the final few chunks that actually reach the LLM',
+          'Cohere Rerank or a cross-encoder as a cheap accuracy improvement layer',
+          "Reducing context-precision failures where irrelevant chunks slip through"
+        ],
+        diagram: ['Top-k candidates', 'Cross-encoder scores each pair', 'Re-sort by new score', 'Top-n to LLM'] },
+      { t: 'RAG Evaluation', d: 'Faithfulness, relevance, context precision (RAGAS)',
+        explanation: "RAG quality isn't just whether it answered correctly — it splits into retrieval and generation quality. Context precision/recall measure whether the right chunks were retrieved. Faithfulness measures whether the generated answer is actually supported by those chunks. Answer relevance measures whether it addresses the question at all.",
+        useCases: [
+          'Automated regression testing of a RAG pipeline with RAGAS',
+          'Diagnosing whether a bad answer is a retrieval problem or a generation problem',
+          'A/B testing chunking or reranking changes with objective metrics'
+        ],
+        diagram: ['Question + retrieved context + answer', 'Faithfulness check', 'Relevance check', 'Context precision/recall', 'Aggregate score'] },
+      { t: 'Hybrid Retrieval', d: 'When to combine dense and sparse',
+        explanation: "Hybrid retrieval combines dense and sparse signals — usually by running both searches and merging scores (e.g. reciprocal rank fusion) — to get the semantic understanding of embeddings plus the precision of keyword matching. It tends to outperform either method alone, especially on queries mixing exact terms with conceptual intent.",
+        useCases: [
+          'Search systems that need to handle both jargon/IDs and natural-language questions',
+          'Improving recall on queries dense retrieval alone misses due to rare terms',
+          'Production RAG systems where retrieval quality directly drives answer quality'
+        ],
+        diagram: ['Query', 'Sparse search', 'Dense search', 'Fuse rankings (RRF)', 'Final ranked list'] },
+      { t: 'Failure Modes', d: 'Retrieval gaps, hallucination on retrieved text',
+        explanation: "Even a well-built RAG system fails predictably: the retriever misses the right chunk entirely (retrieval gap), the LLM ignores retrieved context and hallucinates anyway, or the index is stale and returns outdated information. Diagnosing which failure mode is occurring determines whether the fix is in retrieval, prompting, or data freshness.",
+        useCases: [
+          'Debugging a wrong answer by first checking if the right chunk was retrieved',
+          'Adding citation/grounding checks to catch generation-side hallucination',
+          'Scheduling reindexing pipelines to prevent stale-data failures'
+        ],
+        diagram: ['Bad answer', 'Was the right chunk retrieved?', 'No → retrieval fix', 'Yes → check grounding', 'Ungrounded → prompting fix'] }
+    ],
+    resources: [
+      { label: '🦜 LangChain RAG Tutorial', url: 'https://python.langchain.com/docs/tutorials/rag/' },
+      { label: '🦙 LlamaIndex Docs', url: 'https://docs.llamaindex.ai/en/stable/' },
+      { label: '📊 RAGAS Eval', url: 'https://github.com/explodinggradients/ragas' }
+    ]
+  },
+  {
+    icon: '🤖', bg: '#f7a26a22', title: 'Agentic AI Systems', sub: 'ReAct · tool use · multi-agent',
+    badgeClass: 'badge-new', badgeText: '🔥 2026',
+    subtopics: [
+      { t: 'ReAct Pattern', d: 'Reason → Act → Observe loop',
+        explanation: "ReAct interleaves reasoning and acting: the model produces a Thought about what to do next, takes an Action (usually a tool call), receives an Observation (the tool's result), and loops until it has enough information to give a final answer. This keeps reasoning grounded in real, up-to-date data rather than pure internal guesswork.",
+        useCases: [
+          'Research agents that search, read, and synthesize information across sources',
+          'Customer support agents that look up order status before answering',
+          'Any agent that needs to interleave reasoning with real-world tool calls'
+        ],
+        diagram: ['Thought', 'Action (tool call)', 'Observation (result)', 'Thought (repeat)', 'Final answer'] },
+      { t: 'Plan-and-Execute Architecture', d: 'Planning separated from execution',
+        explanation: "Instead of deciding one step at a time, a planning model first produces a full multi-step plan, then a (often separate, cheaper) execution model carries out each step. This reduces redundant reasoning calls and works well when the task structure is knowable upfront, though it's less adaptive if the plan turns out to be wrong.",
+        useCases: [
+          "Multi-step workflows like 'research topic, draft outline, write report'",
+          'Reducing cost by using a cheap model for execution, expensive model only for planning',
+          'Tasks where the sequence of steps rarely needs to change mid-execution'
+        ],
+        diagram: ['Task', 'Planner: generate step list', 'Executor: run step 1..n', 'Replan if a step fails', 'Final result'] },
+      { t: 'Tool / Function Calling', d: 'Schema design, validation, sandboxing',
+        explanation: "The model is given a schema (name, description, parameters) for each available tool and decides when and how to call it, producing structured arguments instead of free text. Production systems must validate those arguments before execution and sandbox anything that touches the real world, since tool output can also carry injected instructions.",
+        useCases: [
+          'Calling a weather API, database query, or calculator from a chat assistant',
+          "Structured extraction — using a 'tool call' purely to force a JSON-shaped response",
+          "Sandboxing code-execution tools so an agent can't run arbitrary system commands"
+        ],
+        diagram: ['Tool schema exposed to model', 'Model emits structured call', 'Validate arguments', 'Execute (sandboxed)', 'Return result to model'] },
+      { t: 'Agent Memory', d: 'Episodic, semantic, working memory',
+        explanation: "Working memory holds the current conversation/context window. Episodic memory stores specific past interactions the agent can recall later. Semantic memory stores generalized facts or preferences, often in a vector store, so the agent remembers across sessions rather than starting fresh every time.",
+        useCases: [
+          'Personal assistants that remember user preferences across sessions (semantic)',
+          "Agents that recall 'what happened last time we tried this' (episodic)",
+          'Long conversations needing summarization to fit the context window (working)'
+        ],
+        diagram: ['Working memory (context window)', 'Episodic store (past events)', 'Semantic store (facts/preferences)', 'Retrieved into prompt as needed'] },
+      { t: 'Failure Modes', d: 'Infinite loops, prompt injection, hallucinated tool calls',
+        explanation: "Agents can get stuck in infinite loops repeating the same failed action, execute hallucinated tool calls with made-up arguments, or fall victim to prompt injection where malicious instructions embedded in a tool's output hijack the agent's behavior. Iteration limits, argument validation, and treating tool output as untrusted data are essential defenses.",
+        useCases: [
+          "Setting a max-iteration cap so a stuck agent doesn't loop forever and burn tokens",
+          'Validating tool call arguments against a schema before executing anything',
+          'Treating any text returned by a tool as untrusted input, not as instructions'
+        ],
+        diagram: ['Agent action', 'Loop detector / iteration cap', 'Untrusted tool output', 'Sanitize before re-injecting', 'Continue or halt'] },
+      { t: 'Multi-Agent Frameworks', d: 'CrewAI, AutoGen, LangGraph',
+        explanation: "Instead of one agent doing everything, multi-agent systems split work across specialized agents that communicate — e.g. a researcher, a writer, and a critic. LangGraph models this as an explicit state graph; CrewAI organizes agents around defined roles and tasks; AutoGen focuses on conversational agent-to-agent collaboration.",
+        useCases: [
+          "A 'critic' agent reviewing and improving a 'writer' agent's output",
+          'Splitting a complex task across agents with different tool access or expertise',
+          'LangGraph for explicit, debuggable control flow between agent states'
+        ],
+        diagram: ['Orchestrator', 'Agent A (research)', 'Agent B (write)', 'Agent C (review)', 'Combined output'] },
+      { t: 'Max Iteration Budgets & Cost Control', d: 'Token cost control',
+        explanation: "Every agent loop iteration costs tokens and latency, and without bounds a stuck or overly thorough agent can run indefinitely. Production systems set a max number of tool calls, a token budget per task, and timeouts, then degrade gracefully — returning partial results or asking for clarification — when limits are hit.",
+        useCases: [
+          'Capping a research agent at, say, 10 tool calls before forcing a final answer',
+          'Setting per-request token budgets to keep unit economics predictable',
+          'Graceful degradation — returning the best partial answer instead of erroring out'
+        ],
+        diagram: ['Start task', 'Track iterations/tokens', 'Under limit? continue', 'Over limit? force finish', 'Return result'] }
+    ],
+    resources: [
+      { label: '🕸 LangGraph', url: 'https://langchain-ai.github.io/langgraph/' },
+      { label: '📄 ReAct Paper', url: 'https://arxiv.org/abs/2210.03629' },
+      { label: '🤖 AutoGen', url: 'https://microsoft.github.io/autogen/' }
+    ]
+  },
+  {
+    icon: '🧠', bg: '#7c6af722', title: "Classical ML (Don't Skip!)", sub: 'foundations still tested in 2026',
+    badgeClass: 'badge-med', badgeText: 'Med',
+    subtopics: [
+      { t: 'Bias-Variance Tradeoff', d: 'Overfitting, regularization (L1/L2)',
+        explanation: "Bias is error from overly simple assumptions (underfitting); variance is error from being too sensitive to the training data's noise (overfitting). Regularization (L1/L2) adds a penalty on model complexity to push the model back toward the sweet spot, trading a little bias for a large reduction in variance.",
+        useCases: [
+          'Explaining why a model performs great on train but poorly on test data',
+          'Choosing L1 (Lasso) for sparse feature selection vs. L2 (Ridge) for smooth shrinkage',
+          'Tuning model complexity against a validation curve'
+        ],
+        diagram: ['Simple model → high bias', 'Complex model → high variance', 'Regularization pulls toward balance', 'Sweet spot on validation curve'] },
+      { t: 'Gradient Descent Variants', d: 'SGD, Adam, AdamW',
+        explanation: "Vanilla SGD updates weights using the gradient of a mini-batch, scaled by a fixed learning rate. Adam adds momentum and adapts the learning rate per parameter using a moving average of squared gradients, converging faster on noisy problems. AdamW decouples weight decay from the gradient update, fixing a subtle Adam bug, and is now the standard for training transformers.",
+        useCases: [
+          'AdamW as the default optimizer for training or fine-tuning transformer models',
+          'Plain SGD with momentum still common in some computer vision training recipes',
+          'Understanding learning rate warmup/decay schedules paired with these optimizers'
+        ],
+        diagram: ['Compute gradient', 'Update momentum estimate', 'Adapt per-parameter LR', 'Apply weight update'] },
+      { t: 'Ensemble Methods', d: 'Random forests, gradient boosting (XGBoost, LightGBM)',
+        explanation: "Random forests train many decision trees on bootstrapped samples and average their predictions (bagging), reducing variance. Gradient boosting (XGBoost, LightGBM) trains trees sequentially, each correcting the errors of the previous ensemble, reducing bias. Boosting typically outperforms bagging on tabular data but is more prone to overfitting if unregularized.",
+        useCases: [
+          'XGBoost/LightGBM as the go-to for structured/tabular data in production',
+          'Random forests when you want a robust, low-tuning baseline resistant to overfitting',
+          'Feature importance analysis for interpretability on tabular business problems'
+        ],
+        diagram: ['Bagging: train N trees in parallel → average', 'Boosting: train tree, fit residual, repeat → sum'] },
+      { t: 'SVMs & the Kernel Trick', d: 'When they beat neural nets',
+        explanation: "Support vector machines find the hyperplane that maximizes the margin between classes. The kernel trick implicitly maps data into a higher-dimensional space, without ever computing the mapping explicitly, so that non-linearly separable data becomes separable — using kernels like RBF or polynomial.",
+        useCases: [
+          'Small-to-medium datasets with clear margins between classes, especially text classification',
+          'High-dimensional, sparse feature spaces where SVMs traditionally do well',
+          'Cases where a neural net would overfit due to limited training data'
+        ],
+        diagram: ['Non-separable data', 'Kernel maps to higher dimension', 'Separable in new space', 'Max-margin hyperplane'] },
+      { t: 'PCA', d: 'Covariance matrix, eigenvectors, SVD',
+        explanation: "PCA finds the directions (principal components) along which the data varies most, via eigendecomposition of the covariance matrix — equivalently, SVD of the centered data. The first component captures the most variance, the second the most remaining variance orthogonal to the first, and so on, letting you compress data while retaining most of its structure.",
+        useCases: [
+          'Compressing high-dimensional features before feeding a simpler downstream model',
+          'Visualizing high-dimensional data in 2D/3D by keeping the top 2-3 components',
+          'Removing multicollinearity among correlated features before regression'
+        ],
+        diagram: ['Center data', 'Compute covariance matrix', 'Eigendecomposition (or SVD)', 'Project onto top-k components'] },
+      { t: 'Evaluation Metrics', d: 'Precision/recall/F1, AUC-ROC, calibration',
+        explanation: "Precision measures how many predicted positives were correct; recall measures how many actual positives were caught; F1 balances the two. AUC-ROC measures ranking quality across all thresholds. Calibration checks whether predicted probabilities match observed frequencies — critical when a downstream decision uses the probability itself, not just the class label.",
+        useCases: [
+          'Recall-focused metrics for fraud or disease detection where missing a positive is costly',
+          'Precision-focused metrics for spam filtering where a false positive is costly',
+          'Calibration checks before using model probabilities to set business thresholds'
+        ],
+        diagram: ['Predictions vs. labels', 'Confusion matrix', 'Precision / Recall / F1', 'AUC-ROC curve', 'Calibration plot'] },
+      { t: 'When NOT to Use an LLM', d: 'Cost, latency, simpler model wins',
+        explanation: "LLMs are expensive, high-latency, and often overkill for problems a simpler model solves just as well — like tabular classification or anything with strict latency SLAs. A good engineer weighs the marginal accuracy gain of an LLM against its cost, latency, and maintainability before reaching for it by default.",
+        useCases: [
+          'Tabular fraud detection where a gradient-boosted tree beats an LLM on cost and accuracy',
+          'Sub-100ms latency requirements where LLM inference is simply too slow',
+          'High-volume, low-margin tasks where LLM API costs dominate unit economics'
+        ],
+        diagram: ['Problem', 'Structured/tabular + low latency?', 'Yes → classical ML', 'No → consider LLM'] }
+    ],
+    resources: [
+      { label: '📘 scikit-learn Guide', url: 'https://scikit-learn.org/stable/user_guide.html' },
+      { label: '📗 ISLP (free book)', url: 'https://www.statlearning.com/' }
+    ]
+  },
+  {
+    icon: '⚙️', bg: '#4fc4cf22', title: 'MLOps & Production', sub: 'pipelines · monitoring · serving',
+    badgeClass: 'badge-hard', badgeText: 'Hard',
+    subtopics: [
+      { t: 'ML Lifecycle', d: 'Training → evaluation → deployment → monitoring → retraining',
+        explanation: "Production ML isn't a one-time train-and-ship event — it's a continuous loop. Models are trained, evaluated offline, deployed, monitored for degrading performance in the wild, and eventually retrained on fresh data as the world and user behavior shift underneath them.",
+        useCases: [
+          'Setting up automated retraining pipelines triggered by drift alerts',
+          'Treating model deployment as the start of monitoring, not the end of the project',
+          'Version-controlling data, code, and model artifacts together for reproducibility'
+        ],
+        diagram: ['Train', 'Evaluate', 'Deploy', 'Monitor', 'Retrain (loop back)'] },
+      { t: 'Feature Stores', d: 'Feast, Tecton — avoiding train/serve skew',
+        explanation: "A feature store centralizes feature computation and serving so the exact same transformation logic used in training is used at inference time. This prevents train/serve skew — a common, hard-to-debug bug where features are computed slightly differently in production, silently degrading model quality.",
+        useCases: [
+          'Sharing engineered features consistently across multiple models and teams',
+          'Serving low-latency online features (Feast) alongside batch features for training',
+          'Auditing feature lineage to debug why a feature drifted or broke'
+        ],
+        diagram: ['Raw data', 'Feature transforms (defined once)', 'Offline store (training)', 'Online store (serving)'] },
+      { t: 'Model Drift', d: 'Data drift vs. concept drift, detection methods',
+        explanation: "Data drift is a shift in the input feature distribution; concept drift is a shift in the relationship between inputs and the target. Both degrade model performance silently unless actively monitored — detection typically compares live feature/prediction distributions against a training-time baseline using statistics like PSI or KL divergence.",
+        useCases: [
+          "Detecting when a fraud model's accuracy is quietly decaying due to new attack patterns",
+          'Monitoring feature distributions to catch upstream data pipeline bugs early',
+          'Triggering automatic retraining or alerts when drift crosses a threshold'
+        ],
+        diagram: ['Live inputs/predictions', 'Compare to training baseline', 'PSI / KL divergence score', 'Threshold exceeded → alert/retrain'] },
+      { t: 'Serving', d: 'REST vs. gRPC, batching, ONNX, TensorRT',
+        explanation: "Serving is how a trained model is exposed to callers. REST is simple and widely compatible; gRPC is faster and more efficient for high-throughput internal services. Requests are often batched to better utilize compute resources, and models are frequently exported to optimized runtimes like ONNX or TensorRT for faster inference.",
+        useCases: [
+          'gRPC for low-latency internal microservice-to-microservice model calls',
+          'REST for public-facing or third-party-integrated APIs',
+          'Exporting to ONNX/TensorRT to squeeze out inference latency in production'
+        ],
+        diagram: ['Client request', 'Load balancer', 'Batch requests', 'Model runtime (ONNX/TensorRT)', 'Response'] },
+      { t: 'Inference Optimization', d: 'Quantization, pruning, distillation',
+        explanation: "Quantization reduces numeric precision (FP32 → INT8/FP16) to shrink memory and speed up compute with minimal accuracy loss. Pruning removes redundant weights or neurons. Distillation trains a smaller student model to mimic a larger teacher model's outputs. All three trade a small amount of accuracy for significant gains in speed and cost.",
+        useCases: [
+          'Quantizing an LLM to INT8 to run on smaller/cheaper GPU hardware',
+          'Distilling a large model into a small one for mobile or edge deployment',
+          'Pruning to reduce model size when memory, not compute, is the bottleneck'
+        ],
+        diagram: ['Full-precision model', 'Quantize / Prune / Distill', 'Smaller, faster model', 'Similar accuracy, lower cost'] },
+      { t: 'A/B Testing & Shadow Deployments', d: 'Safe rollout strategies for ML',
+        explanation: "Shadow deployment runs a new model alongside the current production model on live traffic without affecting real outputs, purely to compare performance safely. A/B testing goes further by splitting live traffic between old and new models and comparing real business metrics before fully cutting over.",
+        useCases: [
+          "Validating a new recommender model's real-world CTR before full rollout",
+          'Catching production-only bugs in shadow mode before any user is affected',
+          'Gradual, metric-driven rollouts instead of risky all-at-once launches'
+        ],
+        diagram: ['Traffic', 'Model A (control)', 'Model B (shadow/challenger)', 'Compare metrics', 'Gradual cutover if B wins'] },
+      { t: 'Tooling', d: 'MLflow, Kubeflow, SageMaker, Vertex AI',
+        explanation: "MLflow tracks experiments, parameters, and model versions. Kubeflow orchestrates ML pipelines on Kubernetes. SageMaker and Vertex AI are managed end-to-end platforms from AWS and GCP. Choice usually comes down to existing cloud infrastructure and how much operational overhead a team wants to own.",
+        useCases: [
+          'MLflow for experiment tracking and model registry across a team',
+          'Kubeflow when you already run Kubernetes and want ML pipelines on it',
+          'SageMaker/Vertex AI for teams that want a managed, less-DIY platform'
+        ],
+        diagram: ['Experiment tracking (MLflow)', 'Pipeline orchestration (Kubeflow)', 'Managed platform (SageMaker/Vertex)'] },
+      { t: 'Observability', d: 'Logging predictions, detecting silent failures',
+        explanation: "A model can be up and returning responses while quietly making worse predictions — a silent failure. Observability means logging predictions, inputs, and confidence scores so degraded performance, edge cases, and outright errors are visible through dashboards and alerts rather than discovered by users.",
+        useCases: [
+          'Logging every prediction with its input features for later drift analysis',
+          'Alerting on abnormal prediction distributions, like a sudden spike in one class',
+          'Sampling live predictions for periodic human review of model quality'
+        ],
+        diagram: ['Prediction served', 'Log input + output + confidence', 'Dashboard / alerting', 'Human review sample'] }
+    ],
+    resources: [
+      { label: '🔬 MLflow Docs', url: 'https://mlflow.org/docs/latest/index.html' },
+      { label: '🛠 Made With ML', url: 'https://madewithml.com/' },
+      { label: '☸️ Kubeflow', url: 'https://www.kubeflow.org/docs/' }
+    ]
+  },
+  {
+    icon: '🏗', bg: '#f7a26a22', title: 'ML System Design', sub: 'the round that matters most',
+    badgeClass: 'badge-hard', badgeText: 'Hard',
+    subtopics: [
+      { t: 'Frame with Business Objective First', d: 'Then model choice',
+        explanation: "The most common system design mistake is jumping straight to model architecture. Strong answers start by clarifying the business goal — e.g. increase watch time vs. increase clicks — because that goal determines the label you optimize for, the metric you report, and which model trade-offs make sense.",
+        useCases: [
+          "Clarifying 'engagement' vs. 'revenue' before designing a recommender's objective",
+          'Asking about latency/scale constraints before picking a model architecture',
+          'Anchoring the interview answer to a metric a business stakeholder would recognize'
+        ],
+        diagram: ['Business goal', 'Translate to ML objective/label', 'Design system around that objective'] },
+      { t: 'Data → Features → Model → Eval → Deploy → Monitor Loop', d: 'The full system loop',
+        explanation: "A complete ML system spans data collection, feature engineering, model training, offline evaluation, deployment, and ongoing monitoring — with monitoring feeding back into retraining. Interviewers want to see you reason about the whole loop, not just the modeling step in isolation.",
+        useCases: [
+          'Structuring any system design answer with this loop as the outline',
+          'Explaining how monitoring signals trigger retraining or rollback',
+          'Showing awareness that data quality often matters more than model choice'
+        ],
+        diagram: ['Data', 'Features', 'Model', 'Eval', 'Deploy', 'Monitor → back to Data'] },
+      { t: 'Recommender Systems', d: 'Candidate generation + ranking (YouTube-style)',
+        explanation: "Large-scale recommenders use a two-stage design: candidate generation narrows millions of items down to a few hundred using a cheap, high-recall model, then a ranking model — using richer features and often a heavier model — scores and orders that shortlist for precision. This keeps latency low while still personalizing accurately.",
+        useCases: [
+          'YouTube/TikTok-style video recommendations balancing relevance and diversity',
+          'E-commerce "you might also like" with candidate generation + ranking',
+          'Cold-start handling for new users or items with no interaction history'
+        ],
+        diagram: ['User + context', 'Candidate generation (fast, high recall)', 'Ranking model (precise, personalized)', 'Top-N shown to user'] },
+      { t: 'Search Ranking, Ads Click-Through Prediction', d: 'Learning-to-rank problems',
+        explanation: "Search ranking scores documents against a query using relevance signals; ads CTR prediction estimates the probability a user clicks a given ad, which combines with bid price to decide auction winners. Both are typically framed as learning-to-rank or classification problems trained on historical logs, with careful handling of position bias.",
+        useCases: [
+          "Predicting click-through rate to power an ad auction's expected-value ranking",
+          'Learning-to-rank search results using query-document relevance features',
+          'Correcting for position bias — top slots get more clicks regardless of relevance'
+        ],
+        diagram: ['Query/Ad + user context', 'Feature extraction', 'CTR / relevance model', 'Rank & auction/display'] },
+      { t: 'LLM Inference Batching System', d: "Anthropic's favorite!",
+        explanation: "Serving many concurrent LLM requests on one GPU means batching them to keep the GPU busy, since inference is often memory-bandwidth-bound rather than compute-bound. Continuous (in-flight) batching lets new requests join a batch mid-generation rather than waiting for the whole batch to finish, dramatically improving throughput over naive static batching.",
+        useCases: [
+          'Anthropic-style question: batch 100 concurrent chat requests on a single GPU',
+          'Balancing batch size against per-request latency SLAs',
+          'Continuous batching (vLLM/Orca-style) to avoid head-of-line blocking'
+        ],
+        diagram: ['Incoming requests', 'Queue', 'Continuous batch (GPU)', 'Requests join/leave mid-batch', 'Stream tokens back'] },
+      { t: 'GPU Utilization, Batching Under Latency SLAs', d: 'Throughput vs. latency trade-offs',
+        explanation: "Bigger batches raise GPU throughput but also raise per-request latency, since a request waits for the whole batch's forward pass. System design here means picking batch size, queuing, and timeout policies that hit a latency SLA while maximizing tokens processed per GPU-second.",
+        useCases: [
+          'Setting max batch size and queue timeout to guarantee a latency SLA',
+          'Autoscaling GPU replicas based on queue depth rather than raw request count',
+          'Trading throughput for latency differently for interactive chat vs. batch jobs'
+        ],
+        diagram: ['Requests arrive', 'Batch policy (size/timeout)', 'GPU forward pass', 'Meets SLA? adjust batch size'] },
+      { t: 'Online vs. Offline Metrics', d: 'Evaluation before launch',
+        explanation: "Offline metrics (accuracy, AUC, NDCG on historical data) are cheap and fast but can diverge from real-world impact, since user behavior reacts to what the model shows them. Online metrics (A/B test results — CTR, revenue, retention) are the real signal but expensive and slow to gather, so teams use offline metrics to filter candidates before online testing.",
+        useCases: [
+          'Using offline NDCG to screen ranking model candidates before an A/B test',
+          "Explaining why an offline 'improvement' sometimes doesn't move online metrics",
+          'Designing guardrail metrics to catch online regressions offline metrics would miss'
+        ],
+        diagram: ['New model', 'Offline eval (fast, cheap)', 'Passes bar? → Online A/B test', 'Real business metric result'] },
+      { t: 'Cost Modeling', d: 'Tokens, compute, storage',
+        explanation: "A complete system design answer includes rough cost estimates — token costs for LLM calls, GPU-hours for training/serving, and storage costs for embeddings or logs — since a technically great design that's economically unworkable isn't a real answer. Sanity-checking request-rate × tokens × price signals production maturity.",
+        useCases: [
+          'Estimating monthly LLM API spend given expected request volume and token counts',
+          'Comparing GPU serving cost vs. a hosted API at a given traffic level',
+          'Justifying caching or a smaller model based on a concrete cost trade-off'
+        ],
+        diagram: ['Requests/sec', '× avg tokens', '× $/token or GPU-hour', '= Estimated cost'] }
+    ],
+    resources: [
+      { label: '📐 Grokking ML Interview', url: 'https://www.educative.io/courses/grokking-the-machine-learning-interview' },
+      { label: "📚 Chip Huyen's Book", url: 'https://huyenchip.com/ml-interviews-book/' }
+    ]
+  },
+  {
+    icon: '🎯', bg: '#7c6af722', title: 'Fine-tuning & RLHF', sub: 'LoRA · SFT · reward models',
+    badgeClass: 'badge-med', badgeText: 'Med',
+    subtopics: [
+      { t: 'SFT vs. RLHF vs. DPO', d: 'Supervised Fine-Tuning approaches',
+        explanation: "SFT trains directly on example input-output pairs, teaching the model a desired format or behavior by imitation. RLHF trains a separate reward model on human preference data, then uses reinforcement learning to optimize the LLM against that reward. DPO skips the separate reward model and RL loop, directly optimizing the policy on preference pairs with a simpler, more stable loss.",
+        useCases: [
+          'SFT as the first step to teach instruction-following before preference tuning',
+          "RLHF/DPO to align a model's tone, safety, and helpfulness with human preference",
+          'DPO increasingly preferred over full RLHF for its simplicity and stability'
+        ],
+        diagram: ['Base model', 'SFT on demonstrations', 'Preference data', 'RLHF (reward model + RL) or DPO (direct)', 'Aligned model'] },
+      { t: 'LoRA and QLoRA', d: 'Rank decomposition, when to use vs. full fine-tune',
+        explanation: "LoRA freezes the original model weights and injects small trainable low-rank matrices into each layer, updating only a tiny fraction of parameters while matching full fine-tuning performance. QLoRA adds 4-bit quantization of the frozen base model, cutting memory further so large models can be fine-tuned on a single consumer GPU.",
+        useCases: [
+          'Fine-tuning a 7B+ parameter model on a single GPU with QLoRA',
+          'Maintaining multiple lightweight task-specific adapters on one base model',
+          'Rapid iteration on fine-tuning experiments where full fine-tuning is too costly'
+        ],
+        diagram: ['Frozen base weights', '+ small trainable low-rank matrices', 'Train only the small matrices', 'Merge or keep as adapter'] },
+      { t: 'Prompt Engineering vs. Fine-tuning Trade-offs', d: 'When to use which',
+        explanation: "Prompt engineering steers behavior through instructions and examples at inference time — fast to iterate but limited by context window and less reliable for deeply ingrained style or domain knowledge. Fine-tuning bakes behavior into the weights — more reliable at inference time, but requires labeled data and is slower to iterate on.",
+        useCases: [
+          'Prompting for quick prototypes or tasks that change frequently',
+          'Fine-tuning for consistent tone/format at scale where prompting is unreliable',
+          'Combining both: fine-tune for behavior, then prompt for task-specific instructions'
+        ],
+        diagram: ['Task', 'Can prompting solve it well enough?', 'Yes → prompt engineering', 'No → fine-tuning'] },
+      { t: 'Reward Model Training', d: 'Preference data collection',
+        explanation: "Human annotators compare pairs or rankings of model outputs and indicate which is better. A reward model is trained on this preference data to predict a scalar score matching human judgment, which then serves as the optimization signal for RLHF — turning subjective human preference into something a training loop can optimize.",
+        useCases: [
+          "Collecting comparison data ('response A vs B, which is better?') at scale",
+          'Training a reward model as the core alignment signal for RLHF',
+          'Diagnosing reward hacking when a model exploits reward model weaknesses'
+        ],
+        diagram: ['Model generates outputs', 'Human ranks pairs', 'Train reward model on rankings', 'Reward model scores new outputs'] },
+      { t: 'Constitutional AI', d: 'Relevant for Anthropic roles',
+        explanation: "Constitutional AI trains a model to critique and revise its own outputs against a written set of principles, then uses that self-generated preference data to further align the model — reducing reliance on large volumes of human-labeled comparisons. It's a core part of how Anthropic aligns Claude.",
+        useCases: [
+          'Scaling alignment without massive human labeling',
+          "Making the model's guiding principles explicit and inspectable rather than implicit",
+          'A strong answer if asked about safety/alignment techniques in an Anthropic interview'
+        ],
+        diagram: ['Model output', 'Self-critique against constitution', 'Self-revise', 'Train on revised (preferred) output'] },
+      { t: 'Catastrophic Forgetting and How to Prevent It', d: 'Preserving prior knowledge',
+        explanation: "When a model is fine-tuned on new data, gradient updates can overwrite weights that encoded previously learned knowledge, causing regressions on tasks it used to handle well. LoRA mitigates this by leaving base weights frozen; other approaches include regularization that penalizes large changes to important weights (EWC) or replay buffers mixing old-task data back in.",
+        useCases: [
+          "Preventing a fine-tuned support model from losing general reasoning ability",
+          'Choosing LoRA specifically to preserve base model capabilities cheaply',
+          'Evaluating on a broad benchmark suite post-fine-tune, not just the target task'
+        ],
+        diagram: ['Fine-tune on new task', 'Risk: overwrite old knowledge', 'Mitigation: LoRA / EWC / replay buffer', 'Preserved general ability'] },
+      { t: 'Evaluation After Fine-tuning', d: 'Avoiding benchmark overfitting',
+        explanation: "It's easy to overfit to a narrow benchmark during fine-tuning and mistake that for genuine improvement. Rigorous evaluation checks performance on held-out data resembling real usage, tests for regressions on previously-supported tasks, and ideally includes human review, not just automated benchmark scores.",
+        useCases: [
+          'Checking a fine-tuned model against a held-out set mirroring production traffic',
+          'Regression testing on tasks the base model already handled well',
+          'Combining automated metrics with spot-check human review before shipping'
+        ],
+        diagram: ['Fine-tuned model', 'Held-out eval set', 'Regression tests on old tasks', 'Human review sample', 'Ship / iterate decision'] }
+    ],
+    resources: [
+      { label: '🤗 HuggingFace TRL', url: 'https://huggingface.co/docs/trl/index' },
+      { label: '📄 DPO Paper', url: 'https://arxiv.org/abs/2305.18290' }
+    ]
+  },
+  {
+    icon: '⚖️', bg: '#4fc4cf22', title: 'Responsible AI & Ethics', sub: 'now a hard engineering requirement',
+    badgeClass: 'badge-new', badgeText: '🔥 2026',
+    subtopics: [
+      { t: 'Bias Audits', d: 'Demographic parity, equalized odds',
+        explanation: "A bias audit measures whether a model's predictions or errors differ systematically across protected groups. Demographic parity checks whether positive prediction rates are similar across groups; equalized odds checks whether true/false positive rates are similar — these definitions can conflict, so choosing which fairness metric matters is itself a value judgment tied to the use case.",
+        useCases: [
+          'Auditing a loan approval model for disparate impact across demographic groups',
+          'Choosing equalized odds over demographic parity when error rates matter most',
+          'Regulatory compliance audits in hiring, lending, and healthcare ML'
+        ],
+        diagram: ['Predictions by group', 'Compute parity/error-rate metrics', 'Compare across groups', 'Flag disparities for review'] },
+      { t: 'Explainability', d: 'SHAP values, LIME, attention visualization',
+        explanation: "SHAP assigns each feature a contribution value showing how much it pushed a specific prediction away from the average, based on Shapley values. LIME approximates a model locally with a simple interpretable model around one prediction. Attention visualization shows which input tokens a transformer focused on — useful but not a full causal explanation.",
+        useCases: [
+          'Explaining an individual loan denial to a customer or regulator (SHAP)',
+          'Debugging why a model made a specific wrong prediction (LIME/SHAP)',
+          'Visualizing attention patterns to sanity-check what an LLM is attending to'
+        ],
+        diagram: ['Prediction', 'Perturb features / compute Shapley values', 'Per-feature contribution', 'Explain to stakeholder'] },
+      { t: 'Adversarial Robustness, Prompt Injection Defense', d: 'Defending against manipulation',
+        explanation: "Adversarial inputs are crafted to fool a model — small perturbations that flip a classifier's output, or prompt injection that hides malicious instructions inside otherwise normal-looking text an LLM processes. Defenses include adversarial training, input sanitization, and treating any externally-sourced content as untrusted rather than as instructions.",
+        useCases: [
+          'Defending an agent that reads web content from prompt injection attacks',
+          'Adversarial training to harden an image classifier against perturbation attacks',
+          'Input validation layers that strip or flag suspicious instruction-like text'
+        ],
+        diagram: ['Untrusted input', 'Sanitize / detect injection', 'Isolate from instruction channel', 'Model processes safely'] },
+      { t: 'Model Cards and Datasheets', d: 'What they contain and why',
+        explanation: "A model card documents a model's intended use, performance across subgroups, known limitations, and training details, giving downstream users enough information to decide if it's appropriate for their use case. A datasheet does the same for a dataset — provenance, collection methodology, and known biases.",
+        useCases: [
+          'Publishing a model card alongside any model released for external use',
+          'Documenting dataset provenance to catch downstream bias or licensing issues',
+          'Meeting regulatory or internal governance requirements'
+        ],
+        diagram: ['Model/dataset', 'Document intended use + limitations', 'Document performance by subgroup', 'Publish for accountability'] },
+      { t: 'Differential Privacy Basics', d: 'Provable privacy guarantees',
+        explanation: "Differential privacy adds carefully calibrated statistical noise during training or to query results so that no individual record can be reliably reverse-engineered from the model's outputs, while aggregate patterns are still learned. It provides a mathematical guarantee, tunable via a privacy budget (epsilon), trading accuracy for provable privacy protection.",
+        useCases: [
+          'Training models on sensitive data like health records with provable privacy',
+          'Preventing membership inference attacks that detect if a record was in training data',
+          'Government/census-style statistical releases that must protect individual privacy'
+        ],
+        diagram: ['Sensitive data', 'Add calibrated noise', 'Train / query', 'Aggregate signal preserved, individuals protected'] },
+      { t: 'Hallucination Mitigation Strategies', d: 'For Anthropic/OpenAI roles',
+        explanation: "LLMs generate fluent text that can be confidently wrong. Mitigations include grounding answers in retrieved sources with citation requirements, training calibrated uncertainty, self-consistency checks that generate multiple answers and check agreement, and instructing the model to say it doesn't know rather than guessing.",
+        useCases: [
+          'Requiring citations from retrieved sources so claims can be verified (RAG)',
+          'Self-consistency sampling to flag low-confidence, inconsistent answers',
+          'Training/prompting a model to abstain rather than confidently fabricate an answer'
+        ],
+        diagram: ['Generated claim', 'Check against retrieved source / self-consistency', 'Grounded? keep', 'Ungrounded? flag or abstain'] },
+      { t: 'Safety vs. Helpfulness Trade-off', d: 'Be ready for values questions',
+        explanation: "A maximally helpful model that never refuses anything can cause real harm; a maximally cautious model that refuses too much becomes useless. Safety-focused labs like Anthropic explicitly train and evaluate this trade-off, aiming for a model that's genuinely helpful on the vast majority of requests while declining a narrow set of genuinely harmful ones.",
+        useCases: [
+          "Behavioral interview question: 'describe a time you balanced usefulness against risk'",
+          'Designing refusal policies that are narrow and well-justified, not broad and paternalistic',
+          'Evaluating models on both helpfulness benchmarks and safety red-teaming'
+        ],
+        diagram: ['Request', 'Genuinely harmful?', 'No → maximize helpfulness', 'Yes → decline/redirect narrowly'] }
+    ],
+    resources: [
+      { label: '📊 SHAP Docs', url: 'https://shap.readthedocs.io/' },
+      { label: '🔬 Anthropic Research', url: 'https://www.anthropic.com/research' }
+    ]
+  },
+  {
+    icon: '💻', bg: '#f7a26a22', title: 'Coding & DSA', sub: 'still required at every company',
+    badgeClass: 'badge-med', badgeText: 'Med',
+    subtopics: [
+      { t: 'Arrays, Hashmaps, Two-Pointer, Sliding Window', d: 'Core patterns',
+        explanation: "Two-pointer and sliding-window techniques solve many array problems in O(n) by maintaining a moving window or pair of pointers instead of nested loops. Hashmaps give O(1) average lookup, turning many O(n²) brute-force problems, like finding a pair summing to a target, into O(n) solutions.",
+        useCases: [
+          'Two Sum, subarray sum problems solved in O(n) with a hashmap',
+          'Longest substring without repeating characters via sliding window',
+          'Any find-a-pair-or-window-satisfying-a-condition interview problem'
+        ],
+        diagram: ['Brute force O(n²)', 'Add hashmap or window pointers', 'Single pass O(n)', 'Optimal solution'] },
+      { t: 'Trees and Graphs (BFS/DFS)', d: 'Common in ML pipeline questions',
+        explanation: "BFS explores level-by-level using a queue — ideal for shortest-path-in-unweighted-graph problems. DFS explores as deep as possible before backtracking, usually via recursion or a stack — natural for tree traversals and problems like connected components or cycle detection. These show up constantly in ML pipeline problems.",
+        useCases: [
+          'Shortest path or minimum-steps problems solved with BFS',
+          'Tree traversal, path-finding, and backtracking problems solved with DFS',
+          'Detecting cycles or connected components in ML pipeline dependency graphs'
+        ],
+        diagram: ['Graph/tree', 'BFS: queue, level by level', 'DFS: stack/recursion, deep first', 'Visited set to avoid repeats'] },
+      { t: 'Dynamic Programming (Medium Difficulty)', d: 'Recognizing subproblems',
+        explanation: "DP applies when a problem has overlapping subproblems and optimal substructure — the optimal solution can be built from optimal solutions to subproblems. Solving it means defining a recurrence relation and either memoizing (top-down) or building a table (bottom-up) to avoid recomputation.",
+        useCases: [
+          'Classic medium problems: coin change, longest common subsequence, knapsack',
+          'Recognizing when brute-force recursion is exponential and needs memoization',
+          'Optimizing space by keeping only the last row/column of a DP table'
+        ],
+        diagram: ['Define recurrence', 'Identify overlapping subproblems', 'Memoize (top-down) or tabulate (bottom-up)', 'O(n) or O(n²) solution'] },
+      { t: 'Python Proficiency', d: 'Generators, decorators, async/await',
+        explanation: "Generators (yield) produce values lazily, saving memory on large sequences. Decorators wrap functions to add behavior like logging or caching without modifying their code. async/await enables concurrent I/O-bound work, like calling multiple APIs, without blocking — which matters heavily in agent and RAG pipelines.",
+        useCases: [
+          'Generators for streaming large datasets without loading everything into memory',
+          'async/await for concurrently calling multiple LLM/tool APIs in an agent pipeline',
+          'Decorators for caching expensive embedding or API calls (@lru_cache)'
+        ],
+        diagram: ['Function', 'Decorator wraps it', 'Generator yields lazily', 'async/await for concurrent I/O'] },
+      { t: 'NumPy Vectorization', d: 'No loops in ML code',
+        explanation: "Explicit Python for-loops over arrays are slow because of interpreter overhead on every iteration. NumPy vectorized operations push the loop down into compiled C code operating on whole arrays at once, giving order-of-magnitude speedups — this is the expected style for any ML code, not just a nice-to-have.",
+        useCases: [
+          'Replacing a for-loop computing distances with a single vectorized matrix operation',
+          'Broadcasting to apply an operation across differently-shaped arrays without loops',
+          'Any interview question that penalizes explicit loops over NumPy arrays'
+        ],
+        diagram: ['for-loop over elements (slow)', 'Vectorized array op (fast)', 'Same result, C-speed execution'] },
+      { t: 'AI-Assisted Coding', d: 'Learn to review, catch bugs in AI output',
+        explanation: "AI coding assistants generate plausible-looking code that can still be subtly wrong — a wrong edge case, a hallucinated library function, a security issue. The interview signal isn't how fast you accept suggestions, it's whether you catch mistakes, ask the AI to justify its choices, and know when to override it and write the logic yourself.",
+        useCases: [
+          'Reviewing AI-generated code for hallucinated APIs or incorrect edge-case handling',
+          'Using AI to scaffold boilerplate while writing critical logic yourself',
+          "Interview rounds that grade judgment in directing/correcting an AI assistant"
+        ],
+        diagram: ['AI suggestion', 'Review critically', 'Correct/reject if wrong', 'Accept only if verified'] },
+      { t: 'Debug Unfamiliar Codebases Quickly', d: "Meta's new round",
+        explanation: "Increasingly tested directly, notably at Meta: given a codebase you've never seen, can you orient quickly, form a hypothesis about where a bug lives, and verify it efficiently using tools like grep, stack traces, and strategic breakpoints — rather than reading every file line by line?",
+        useCases: [
+          "Meta's newer interview round: fix a bug in an unfamiliar repo under time pressure",
+          'Onboarding onto a new team\u2019s codebase and shipping a fix in week one',
+          'Triage-style debugging in production incidents where speed matters'
+        ],
+        diagram: ['Unfamiliar codebase', 'Reproduce the bug', 'Narrow down (search/breakpoints)', 'Form + test hypothesis', 'Fix + verify'] }
+    ],
+    resources: [
+      { label: '💻 LeetCode Top 150', url: 'https://leetcode.com/studyplan/top-interview-150/' },
+      { label: '🧩 NeetCode', url: 'https://neetcode.io/' }
+    ]
+  }
+];
+
+// Render topic list cards
+function renderTopics() {
+  const container = document.getElementById('topics-list');
+  container.innerHTML = TOPICS.map((topic, idx) => `
+    <div class="topic-card" id="card-${idx}">
+      <div class="topic-header" onclick="openTopicDetail(${idx})">
+        <div class="topic-icon" style="background:${topic.bg}">${topic.icon}</div>
+        <div class="topic-meta">
+          <div class="topic-title">${topic.title}</div>
+          <div class="topic-sub">${topic.sub}</div>
+        </div>
+        <div class="topic-badges">
+          <span class="badge ${topic.badgeClass}">${topic.badgeText}</span>
+          <button class="check-btn" id="chk-${idx}" onclick="toggleCheck(event,${idx})">✓</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Open a topic's detail page
+function openTopicDetail(idx) {
+  const topic = TOPICS[idx];
+  document.getElementById('detail-icon').textContent = topic.icon;
+  document.getElementById('detail-icon').style.background = topic.bg;
+  document.getElementById('detail-title').textContent = topic.title;
+  document.getElementById('detail-sub').textContent = topic.sub;
+  const badge = document.getElementById('detail-badge');
+  badge.textContent = topic.badgeText;
+  badge.className = 'badge ' + topic.badgeClass;
+
+  document.getElementById('detail-subtopics').innerHTML = topic.subtopics.map((s, subIdx) => `
+    <div class="subtopic-box" onclick="openSubtopicDetail(${idx},${subIdx})">
+      <div class="subtopic-box-row">
+        <div class="subtopic-box-text">
+          <div class="subtopic-title">${s.t}</div>
+          <div class="subtopic-desc">${s.d}</div>
+        </div>
+        <div class="subtopic-chevron">›</div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('detail-resources').innerHTML = topic.resources.map(r =>
+    `<a class="resource-link" href="${r.url}" target="_blank">${r.label}</a>`
+  ).join('');
+
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.getElementById('section-topic-detail').classList.add('visible');
+  document.querySelector('.tabs').style.display = 'none';
+  document.querySelector('.bottom-nav').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+function closeTopicDetail() {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.getElementById('section-topics').classList.add('visible');
+  document.querySelector('.tabs').style.display = 'flex';
+  document.querySelector('.bottom-nav').style.display = 'flex';
+}
+
+// Open a subtopic's full detail page
+function openSubtopicDetail(topicIdx, subIdx) {
+  const topic = TOPICS[topicIdx];
+  const sub = topic.subtopics[subIdx];
+
+  document.getElementById('sub-back-btn').textContent = '← Back to ' + topic.title;
+  document.getElementById('sub-detail-parent').textContent = topic.title;
+  document.getElementById('sub-detail-title').textContent = sub.t;
+  document.getElementById('sub-detail-explanation').textContent = sub.explanation;
+
+  document.getElementById('sub-detail-usecases').innerHTML = sub.useCases.map(u =>
+    `<div class="usecase-box">${u}</div>`
+  ).join('');
+
+  document.getElementById('sub-detail-diagram').innerHTML = sub.diagram.map((step, i) =>
+    `<div class="diagram-step">${step}</div>` + (i < sub.diagram.length - 1 ? '<span class="diagram-arrow">→</span>' : '')
+  ).join('');
+
+  const resources = sub.resources || topic.resources;
+  document.getElementById('sub-detail-resources').innerHTML = resources.map(r =>
+    `<a class="resource-link" href="${r.url}" target="_blank">${r.label}</a>`
+  ).join('');
+
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.getElementById('section-subtopic-detail').classList.add('visible');
+  window.scrollTo(0, 0);
+}
+
+function closeSubtopicDetail() {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.getElementById('section-topic-detail').classList.add('visible');
+  window.scrollTo(0, 0);
+}
+
+// Check done
+const checked = {};
+function toggleCheck(e, idx) {
+  e.stopPropagation();
+  const btn = document.getElementById('chk-' + idx);
+  const card = document.getElementById('card-' + idx);
+  checked[idx] = !checked[idx];
+  btn.classList.toggle('checked', checked[idx]);
+  card.classList.toggle('done', checked[idx]);
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = 9;
+  const done = Object.values(checked).filter(Boolean).length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+// Section switching
+function showSection(name, el, fromNav) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.getElementById('section-' + name).classList.add('visible');
+
+  if (fromNav) {
+    document.querySelectorAll('.bottom-nav .nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    const map = { topics: 0, rounds: 1, cards: 2 };
+    document.querySelectorAll('.tab')[map[name]]?.classList.add('active');
+  } else {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.bottom-nav .nav-item').forEach(n => n.classList.remove('active'));
+    const map = { topics: 0, rounds: 1, cards: 2 };
+    document.querySelectorAll('.bottom-nav .nav-item')[map[name]]?.classList.add('active');
+  }
+}
+
+// Init
+renderTopics();
+loadCard(0);
+</script>
+</body>
+</html>
