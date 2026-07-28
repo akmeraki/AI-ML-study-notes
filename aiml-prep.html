@@ -413,6 +413,88 @@
     flex-shrink: 0;
   }
 
+  /* SYSTEM DESIGN CASE STUDIES */
+  .case-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 16px;
+    margin-bottom: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .case-card:hover { border-color: var(--accent); }
+  .case-card-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .case-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .case-card-meta { flex: 1; min-width: 0; }
+  .case-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+  .case-card-tagline {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .case-card-chevron { color: var(--muted); font-size: 20px; flex-shrink: 0; }
+
+  .case-section-heading {
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 26px 0 12px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .case-section-heading:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
+  .question-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .question-num {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #7c6af722;
+    color: var(--accent);
+    border: 1px solid #7c6af744;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
   .flashcard-area {
     perspective: 1000px;
     margin-bottom: 16px;
@@ -615,6 +697,7 @@
 <div class="tabs">
   <button class="tab active" onclick="showSection('topics', this)">📚 Topics</button>
   <button class="tab" onclick="showSection('rounds', this)">🎯 Rounds</button>
+  <button class="tab" onclick="showSection('sysdesign', this)">🏗 System Design</button>
   <button class="tab" onclick="showSection('cards', this)">🃏 Flashcards</button>
 </div>
 
@@ -737,6 +820,24 @@
     </div>
   </div>
 
+  <!-- SYSTEM DESIGN -->
+  <div class="section" id="section-sysdesign">
+    <div class="section-title">Full Worked Examples</div>
+    <div id="sysdesign-list"></div>
+  </div>
+
+  <!-- CASE STUDY DETAIL PAGE -->
+  <div class="section" id="section-case-detail">
+    <button class="back-btn" onclick="closeCaseDetail()">← Back to System Design</button>
+    <div class="detail-header">
+      <div class="topic-icon" id="case-icon">🔍</div>
+      <div class="detail-header-meta">
+        <div class="detail-title" id="case-title"></div>
+        <div class="detail-sub" id="case-tagline"></div>
+      </div>
+    </div>
+    <div id="case-body"></div>
+  </div>
 
   <div class="section" id="section-cards">
     <div class="section-title">Quick-fire concepts</div>
@@ -768,6 +869,10 @@
   <button class="nav-item" onclick="showSection('rounds', this, true)">
     <span class="nav-icon">🎯</span>
     <span class="nav-label">Rounds</span>
+  </button>
+  <button class="nav-item" onclick="showSection('sysdesign', this, true)">
+    <span class="nav-icon">🏗</span>
+    <span class="nav-label">Design</span>
   </button>
   <button class="nav-item" onclick="showSection('cards', this, true)">
     <span class="nav-icon">🃏</span>
@@ -1535,6 +1640,243 @@ function closeSubtopicDetail() {
   document.getElementById('section-topic-detail').classList.add('visible');
   window.scrollTo(0, 0);
 }
+// ---- SYSTEM DESIGN CASE STUDIES ----
+const CASE_STUDIES = [
+  {
+    icon: '🔍', bg: '#4fc4cf22',
+    title: 'Design a RAG-Based Enterprise Q&A System',
+    tagline: 'Ground LLM answers in a company\u2019s internal docs — wikis, PDFs, tickets',
+    sections: [
+      { heading: 'Problem Statement', type: 'text',
+        content: "Design a system that lets employees ask natural-language questions and get accurate answers grounded in the company's internal documentation — wikis, PDFs, Slack threads, tickets — instead of relying on the LLM's raw parametric knowledge, which may be outdated or simply doesn't include private data." },
+      { heading: 'Clarifying Questions to Ask', type: 'list', items: [
+        "What's the corpus size and format mix — PDFs, HTML, Slack, code, tables?",
+        'How often does the underlying data change — daily updates, real-time, static snapshot?',
+        'What\u2019s the expected query volume (QPS) and acceptable latency (P95)?',
+        'Is this single-tenant or multi-tenant — do different users/teams see different subsets of documents (access control)?',
+        'Do answers need citations back to source documents?',
+        'Is this a single-turn Q&A or a multi-turn conversational assistant?',
+        'What languages need to be supported?',
+        'What\u2019s the budget/cost ceiling per query?'
+      ]},
+      { heading: 'Functional Requirements', type: 'list', items: [
+        'Accept a natural-language question and return a grounded answer with source citations',
+        'Support incremental ingestion of new/updated documents without full reindexing',
+        'Respect document-level access control per user',
+        'Support follow-up questions within a conversation (multi-turn)',
+        "Gracefully say 'I don't know' when no relevant document is found"
+      ]},
+      { heading: 'Non-Functional Requirements', type: 'list', items: [
+        'P95 latency under ~2\u20133 seconds end-to-end',
+        'Scale to ~10M documents and ~500 QPS',
+        'High availability (99.9%) since it\u2019s a production support tool',
+        'Cost-efficient — bound LLM token usage per query',
+        'Auditable — log retrieved sources per answer for compliance'
+      ]},
+      { heading: 'Back-of-Envelope Estimation', type: 'list', items: [
+        '10M documents × ~2KB avg chunk × 5 chunks/doc ≈ 100GB raw text',
+        'Embedding dim 768 × 4 bytes × 50M chunks ≈ 150GB vector storage (before compression)',
+        '500 QPS × ~5 retrieved chunks × ~500 tokens/chunk ≈ 1.25M context tokens/sec fed to the LLM at peak — the dominant cost driver',
+        'At roughly $3 per 1M input tokens, peak-hour cost runs into dollars per second — caching and reranking to shrink context become critical'
+      ]},
+      { heading: 'High-Level Architecture', type: 'diagram', steps: [
+        'Docs (wikis, PDFs, tickets)', 'Ingestion pipeline', 'Chunk + embed', 'Vector DB + BM25 index',
+        'Query → retrieve + rerank', 'Prompt assembly', 'LLM generation', 'Answer + citations'
+      ]},
+      { heading: 'Deep Dive: Ingestion & Chunking', type: 'text',
+        content: "A scheduled or event-driven pipeline pulls documents from source systems, normalizes formats (PDF→text, HTML→text), and splits them into chunks — semantic or sliding-window chunking with overlap works best for wikis/FAQs since it preserves context at chunk boundaries. Each chunk keeps metadata (source URL, document ACL, last-updated timestamp) for filtering and citation." },
+      { heading: 'Deep Dive: Embedding & Vector Store', type: 'text',
+        content: 'Chunks are embedded with a bi-encoder and stored in a vector database chosen for scale and latency needs — managed (Pinecone/Weaviate) for elastic scale, pgvector if already on Postgres, or a self-hosted HNSW index for full control. A BM25 inverted index is built in parallel to support hybrid retrieval.' },
+      { heading: 'Deep Dive: Retrieval & Reranking', type: 'text',
+        content: 'At query time, the question is embedded and matched against the vector index (top-k, e.g. k=20), plus a BM25 keyword search for exact-match terms; results are merged (e.g. reciprocal rank fusion). A cross-encoder reranker then re-scores the merged candidates and only the top ~5 chunks are kept — the single biggest lever for context precision.' },
+      { heading: 'Deep Dive: Prompt Assembly & Generation', type: 'text',
+        content: "The top chunks are inserted into a prompt template that instructs the model to answer only from the provided context, cite sources by chunk ID, and explicitly say it doesn't know if the context is insufficient. Conversation history is summarized or truncated to fit the context window for multi-turn support." },
+      { heading: 'Deep Dive: Access Control', type: 'text',
+        content: "Every chunk carries ACL metadata inherited from its source document. Retrieval must filter by the requesting user's permissions during the vector search (metadata filtering) — never rely on the LLM to enforce access control after the fact, since it can't reliably refuse to use context it's already been shown." },
+      { heading: 'Deep Dive: Caching & Cost Control', type: 'text',
+        content: "Cache embeddings so unchanged documents aren't re-embedded on every ingestion run. Cache frequent query→answer pairs with a freshness check against source-document timestamps. Cap context length delivered to the LLM, and route simple factual queries to a cheaper model, escalating to a larger one only when needed." },
+      { heading: 'Evaluation Metrics', type: 'list', items: [
+        'Retrieval: context precision, context recall — are the right chunks retrieved?',
+        'Generation: faithfulness (is the answer grounded in retrieved text?), answer relevance',
+        'Automated regression suite using RAGAS on a fixed eval question set',
+        "Online: user thumbs-up/down rate, 'I don't know' rate, follow-up-question rate as a proxy for unresolved queries",
+        'Latency: P50/P95/P99 end-to-end, broken down by retrieval vs. generation time'
+      ]},
+      { heading: 'Failure Modes & Edge Cases', type: 'list', items: [
+        "Retrieval gap — the right document exists but isn't retrieved (chunking or embedding issue)",
+        'Stale index — a document was updated but the index still serves an old chunk',
+        'Hallucination despite grounding — model ignores retrieved context and answers from parametric memory',
+        'Access-control leakage — a sensitive chunk is retrieved for a user without permission',
+        'Ambiguous queries that match multiple unrelated documents equally well',
+        'Long-tail queries with no relevant document — the system must abstain rather than fabricate'
+      ]},
+      { heading: 'Trade-offs & Alternatives', type: 'list', items: [
+        'Fine-tuning vs. RAG: RAG is chosen here because knowledge changes frequently and needs traceability/citations — fine-tuning would need constant retraining',
+        'Managed vs. self-hosted vector DB: managed trades cost/control for lower operational burden',
+        'Larger top-k retrieval improves recall but increases token cost and can dilute the reranker signal — needs tuning',
+        'Huge single context window (stuff everything in) vs. retrieval: even with large context windows, RAG is usually cheaper and more precise at scale'
+      ]},
+      { heading: 'Interview Follow-Up Questions', type: 'numbered', items: [
+        'How would you detect and handle stale or duplicate content in the index?',
+        'How would you support multiple languages in the corpus?',
+        'How would you evaluate this system without an existing labeled eval set?',
+        'How would you reduce hallucination further if faithfulness scores are still low after RAG?',
+        'How would you scale this to 100x the document volume?',
+        'How would you handle a sudden burst of query traffic (flash crowd)?',
+        'How would you support structured data (tables, spreadsheets) in retrieval, not just prose?',
+        'How would you design the system to support both an internal chat UI and a public-facing API?',
+        "How would you incorporate user feedback (thumbs up/down) to improve retrieval over time?",
+        'What would you change if the corpus were 10 documents instead of 10 million?',
+        'How would you handle multi-hop questions that require combining facts from two different documents?',
+        "How would you control cost if usage 10x'd overnight?",
+        'How would you design for sub-500ms latency instead of 2\u20133 seconds?',
+        'How would you monitor for silent quality degradation in production?'
+      ]}
+    ]
+  },
+  {
+    icon: '🏗', bg: '#7c6af722',
+    title: 'Design a Large-Scale Recommendation System',
+    tagline: 'YouTube/Netflix/Amazon-style personalized recommendations',
+    sections: [
+      { heading: 'Problem Statement', type: 'text',
+        content: 'Design a system that recommends personalized items (videos, products, posts) to users from a catalog of millions of items, optimizing for a business objective like engagement, watch time, or purchase conversion, while serving predictions within tens of milliseconds.' },
+      { heading: 'Clarifying Questions to Ask', type: 'list', items: [
+        "What's the business objective — engagement (watch time/clicks) or revenue (conversion/GMV)?",
+        "What's the catalog size and how fast does it change (new items/day)?",
+        'How many active users, and what QPS is expected for the recommendation endpoint?',
+        "What's the latency SLA — a real-time feed, or an offline batch email digest?",
+        'Do we need to support cold-start users and cold-start items?',
+        'Is diversity/freshness/fairness a requirement, or is pure relevance the only goal?',
+        'Is this single-surface (homepage) or multi-surface (homepage, search, related-items)?'
+      ]},
+      { heading: 'Functional Requirements', type: 'list', items: [
+        'Given a user and context, return a ranked list of the top-N recommended items',
+        'Support cold-start for new users and new items',
+        'Update recommendations as user behavior changes within a session (real-time signal)',
+        'Support business rules/overrides — e.g. exclude out-of-stock items, boost promoted content'
+      ]},
+      { heading: 'Non-Functional Requirements', type: 'list', items: [
+        'P99 latency under ~100ms for the recommendation API',
+        'Scale to hundreds of millions of users and tens of millions of items',
+        'High availability — recommendations are core to the product surface',
+        'Freshness — incorporate signals from the last few minutes of user activity'
+      ]},
+      { heading: 'Back-of-Envelope Estimation', type: 'list', items: [
+        '100M DAU × 5 recommendation requests/session/day ≈ 500M requests/day ≈ ~6K QPS average, higher at peak',
+        '10M items × 128-dim embedding × 4 bytes ≈ 5GB item embedding index — fits in memory for fast ANN search',
+        'Ranking ~200 candidates per request × 6K QPS ≈ 1.2M scoring ops/sec — drives the choice of a lightweight ranking model or heavy batching'
+      ]},
+      { heading: 'High-Level Architecture', type: 'diagram', steps: [
+        'User request + context', 'Candidate generation (multiple sources)', 'Merge candidates (~hundreds)',
+        'Ranking model (precise scoring)', 'Business logic / re-ranking', 'Top-N response'
+      ]},
+      { heading: 'Deep Dive: Candidate Generation', type: 'text',
+        content: "A two-stage funnel is standard: candidate generation cheaply narrows millions of items to a few hundred using high-recall methods — collaborative filtering (user/item co-occurrence), a two-tower embedding model (user tower + item tower matched via approximate nearest neighbor search), and heuristics like 'trending' or 'same category.' Multiple candidate sources are usually combined to increase diversity and cover different signal types." },
+      { heading: 'Deep Dive: Ranking Model', type: 'text',
+        content: 'The merged candidate set (a few hundred items) is scored by a heavier ranking model using rich features — user history, item metadata, contextual features (time of day, device), and cross features (user-item interaction history). Gradient-boosted trees (XGBoost/LightGBM) are a strong, interpretable baseline; deep multi-task models can jointly predict multiple objectives (click probability, watch time, like probability) and combine them into a final score.' },
+      { heading: 'Deep Dive: Feature Store & Data Pipeline', type: 'text',
+        content: "User and item features are precomputed and served through a feature store to guarantee training/serving consistency. Real-time features (e.g. 'items viewed in this session') are computed via a streaming pipeline (Kafka/Flink) so recommendations reflect very recent behavior, while long-term features (e.g. 'average watch time over 30 days') are computed in batch." },
+      { heading: 'Deep Dive: Cold-Start Handling', type: 'text',
+        content: 'New users get recommendations from popularity/trending baselines and any available signal (signup demographics, referral source), transitioning to personalized results as interaction data accumulates. New items are boosted via exploration (a small random traffic allocation to gather interaction data) or content-based similarity to existing items until enough collaborative signal exists.' },
+      { heading: 'Deep Dive: Online Serving & Latency', type: 'text',
+        content: 'Candidate generation is often precomputed/cached per user, refreshed periodically or on key events, to avoid full computation on every request. The ranking model must score the candidate set within the latency budget — this drives choices like model distillation, feature caching, and batching multiple requests together when using GPU-based rankers.' },
+      { heading: 'Deep Dive: Business Logic & Re-ranking', type: 'text',
+        content: "After the ML ranking score, a final business-logic layer applies rules: remove out-of-stock or already-purchased items, enforce diversity (don't show ten videos from the same channel in a row), inject sponsored content at set positions, and apply fairness/exposure constraints if required." },
+      { heading: 'Evaluation Metrics', type: 'list', items: [
+        'Offline: precision@k, recall@k, NDCG against historical interaction logs',
+        'Offline: AUC for the click/engagement prediction sub-model',
+        'Online: A/B test on CTR, watch time / session length, conversion rate',
+        'Online: longer-term guardrail metrics — retention, diversity of consumption, complaint rate',
+        'Business: revenue per session, GMV lift for e-commerce'
+      ]},
+      { heading: 'Failure Modes & Edge Cases', type: 'list', items: [
+        'Feedback loops — recommending only what\u2019s popular makes it more popular, starving new/niche content (filter bubble)',
+        'Cold-start items never surfacing because they lack interaction history to rank well',
+        'Stale candidate cache showing outdated recommendations right after a major user action',
+        'Position bias in training data — top-ranked historical items get more clicks regardless of true relevance, biasing the model if uncorrected',
+        'Over-personalization reducing discovery — the user only ever sees near-identical content'
+      ]},
+      { heading: 'Trade-offs & Alternatives', type: 'list', items: [
+        'Two-stage funnel vs. scoring the entire catalog directly: the funnel trades a small recall loss for massive latency/cost savings at scale',
+        'GBDT vs. deep learning ranker: GBDT is faster to train/serve and more interpretable; deep multi-task models scale better with more data and objectives but cost more to operate',
+        'Real-time re-ranking vs. precomputed lists: real-time adapts faster to session behavior but costs more per request',
+        'Exploration vs. pure exploitation: always showing the highest predicted score maximizes short-term metrics but worsens cold-start and diversity long-term'
+      ]},
+      { heading: 'Interview Follow-Up Questions', type: 'numbered', items: [
+        'How would you handle the explore/exploit trade-off for new items?',
+        'How would you correct for position bias in training data collected from previous recommendation logs?',
+        'How would you design this system to jointly optimize for both watch time and long-term retention?',
+        "How would you detect and mitigate a feedback loop that's narrowing content diversity over time?",
+        'How would you scale candidate generation if the catalog grew from 10M to 1B items?',
+        'How would you personalize for a logged-out or anonymous user?',
+        "How would you incorporate social signals (friends' activity) into ranking?",
+        "How would you design an A/B test to validate a new ranking model without harming user experience?",
+        'How would you reduce latency if P99 needed to drop from 100ms to 20ms?',
+        "How would you handle a request where the user has almost no interaction history (partial cold-start)?",
+        "How would you support 'why was this recommended to me' explainability for users or regulators?",
+        'How would you extend this system to multi-surface recommendations (home feed + search + email)?',
+        'How would you detect when the ranking model itself has drifted and needs retraining?'
+      ]}
+    ]
+  }
+];
+
+function renderSysDesign() {
+  const container = document.getElementById('sysdesign-list');
+  container.innerHTML = CASE_STUDIES.map((c, idx) => `
+    <div class="case-card" onclick="openCaseDetail(${idx})">
+      <div class="case-card-row">
+        <div class="case-card-icon" style="background:${c.bg}">${c.icon}</div>
+        <div class="case-card-meta">
+          <div class="case-card-title">${c.title}</div>
+          <div class="case-card-tagline">${c.tagline}</div>
+        </div>
+        <div class="case-card-chevron">›</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderCaseSection(section) {
+  let inner = '';
+  if (section.type === 'text') {
+    inner = `<div class="explanation-text">${section.content}</div>`;
+  } else if (section.type === 'list') {
+    inner = section.items.map(i => `<div class="usecase-box">${i}</div>`).join('');
+  } else if (section.type === 'diagram') {
+    inner = `<div class="diagram-flow">${section.steps.map((step, i) =>
+      `<div class="diagram-step">${step}</div>` + (i < section.steps.length - 1 ? '<span class="diagram-arrow">→</span>' : '')
+    ).join('')}</div>`;
+  } else if (section.type === 'numbered') {
+    inner = section.items.map((i, n) => `<div class="question-item"><div class="question-num">${n + 1}</div><div>${i}</div></div>`).join('');
+  }
+  return `<div class="case-section-heading">${section.heading}</div>${inner}`;
+}
+
+function openCaseDetail(idx) {
+  const c = CASE_STUDIES[idx];
+  document.getElementById('case-icon').textContent = c.icon;
+  document.getElementById('case-icon').style.background = c.bg;
+  document.getElementById('case-title').textContent = c.title;
+  document.getElementById('case-tagline').textContent = c.tagline;
+  document.getElementById('case-body').innerHTML = c.sections.map(renderCaseSection).join('');
+
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.getElementById('section-case-detail').classList.add('visible');
+  document.querySelector('.tabs').style.display = 'none';
+  document.querySelector('.bottom-nav').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+function closeCaseDetail() {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.getElementById('section-sysdesign').classList.add('visible');
+  document.querySelector('.tabs').style.display = 'flex';
+  document.querySelector('.bottom-nav').style.display = 'flex';
+  window.scrollTo(0, 0);
+}
+
 
 // Check done
 const checked = {};
@@ -1565,19 +1907,20 @@ function showSection(name, el, fromNav) {
     document.querySelectorAll('.bottom-nav .nav-item').forEach(n => n.classList.remove('active'));
     el.classList.add('active');
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    const map = { topics: 0, rounds: 1, cards: 2 };
+    const map = { topics: 0, rounds: 1, sysdesign: 2, cards: 3 };
     document.querySelectorAll('.tab')[map[name]]?.classList.add('active');
   } else {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
     document.querySelectorAll('.bottom-nav .nav-item').forEach(n => n.classList.remove('active'));
-    const map = { topics: 0, rounds: 1, cards: 2 };
+    const map = { topics: 0, rounds: 1, sysdesign: 2, cards: 3 };
     document.querySelectorAll('.bottom-nav .nav-item')[map[name]]?.classList.add('active');
   }
 }
 
 // Init
 renderTopics();
+renderSysDesign();
 loadCard(0);
 </script>
 </body>
